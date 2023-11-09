@@ -16,13 +16,27 @@ export default function MyForm() {
 
     // You can pass formData as a fetch body directly:
     // fetch("/some-api", { method: form.method, body: formData });
-    const keys = Object.keys(countryListAlpha2);
+
     // Or you can work with it as a plain object:
     const formJson = Object.fromEntries(formData.entries());
     console.log(formJson);
-    console.log(keys);
 
     toast.success("Correct!");
+  }
+
+  function getRandomCountryCode(
+    obj: Record<string, string>
+  ): [string, string] | undefined {
+    const keys = Object.keys(obj);
+
+    if (keys.length === 0) {
+      return undefined;
+    }
+
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+    const randomValue = obj[randomKey];
+
+    return [randomKey, randomValue];
   }
 
   return (
