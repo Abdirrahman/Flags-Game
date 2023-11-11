@@ -3,11 +3,11 @@ import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
 import "@/styles/global.css";
 import { Button } from "@/components/ui/button";
-import Answer from "../components/Answer.tsx";
+import Game from "../components/Game.tsx";
 ---
 
 <Layout title="Welcome to Astro.">
   <div class="flex justify-center flex-col items-center mt-48 lg:m-72">
-    <Answer client:load />
+    <Game client:load />
   </div>
 </Layout>
