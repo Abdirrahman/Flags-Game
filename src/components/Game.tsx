@@ -8,7 +8,11 @@ export default function Game() {
   const [countryCode, setCountryCode] = React.useState<string>("cz");
   const [countryName, setCountryName] = React.useState<string>("Czechia");
   const [score, setScore] = React.useState<number>(0);
+  const [highScore, setHighScore] = React.useState<number>(0);
   const [answer, setAnswer] = React.useState<string>("");
+
+  // Highscore impl for later
+  // if (highScore < score ) setHighScore(score)
 
   React.useEffect(() => {
     // fetch("https://flagcdn.com/en/codes.json")
@@ -79,7 +83,10 @@ export default function Game() {
 
   return (
     <>
-      <div className="absolute top-0 right-0 ">{score}</div>
+      <div className="absolute top-0 right-0 text-4xl m-3">{score}</div>
+      <div className="absolute top-0 right-0 text-4xl m-3 mt-10 text-pink-900">
+        {highScore}
+      </div>
       <img
         src={`https://flagcdn.com/${countryCode}.svg`}
         width="200"
