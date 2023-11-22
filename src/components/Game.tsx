@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import * as React from "react";
 import { Toaster, toast } from "sonner";
 import { countryListAlpha2 } from "@/lib/countries";
+import { ModeToggle } from "./ModeToogle";
 
 export default function Game() {
   const [countryCode, setCountryCode] = React.useState<string>("cz");
@@ -83,9 +84,12 @@ export default function Game() {
 
   return (
     <>
-      <div className="absolute top-0 right-0 text-4xl m-3">{score}</div>
-      <div className="absolute top-0 right-0 text-4xl m-3 mt-10 text-pink-900">
+      <div className="absolute top-0 left-0 text-4xl m-3">{score}</div>
+      <div className="absolute top-0 left-0 text-4xl m-3 mt-10 text-pink-900">
         {highScore}
+      </div>
+      <div className="absolute top-0 right-0 text-4xl m-3">
+        <ModeToggle />
       </div>
       <img
         src={`https://flagcdn.com/${countryCode}.svg`}
