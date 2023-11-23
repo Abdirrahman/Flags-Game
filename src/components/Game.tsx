@@ -4,7 +4,7 @@ import * as React from "react";
 import { Toaster, toast } from "sonner";
 import { countryListAlpha2 } from "@/lib/countries";
 import { ModeToggle } from "./ModeToogle";
-
+import { Github, Lightbulb } from "lucide-react";
 export default function Game() {
   const [countryCode, setCountryCode] = React.useState<string>("cz");
   const [countryName, setCountryName] = React.useState<string>("Czechia");
@@ -110,6 +110,19 @@ export default function Game() {
 
       <div className="absolute top-0 right-0 text-4xl m-3">
         <ModeToggle />
+      </div>
+      <div className="absolute bottom-0 left-0 m-3">
+        <Button variant="outline" size="icon">
+          <a href="https://github.com/Abdirrahman/Flags-Game" target="_blank">
+            <Github />
+          </a>
+        </Button>
+      </div>
+
+      <div className="absolute bottom-0 right-0 m-3">
+        <Button variant="outline" size="icon">
+          <Lightbulb />
+        </Button>
       </div>
       <img
         src={`https://flagcdn.com/${countryCode}.svg`}
