@@ -11,6 +11,7 @@ export default function Game() {
   const [score, setScore] = React.useState<number>(0);
   const [highScore, setHighScore] = React.useState<number>(0);
   const [answer, setAnswer] = React.useState<string>("");
+  const [animate, setAnimate] = React.useState<boolean>(false);
 
   // Highscore impl for later
   // if (highScore < score ) setHighScore(score)
@@ -46,12 +47,14 @@ export default function Game() {
       removeThe(countryName.toLowerCase())
     ) {
       setScore(score + 1);
-      toast.success("Correct!");
+      setAnimate(true);
+      toast.success(`Correct! That was ${removeThe(countryName)}.`);
       console.log("correct");
       gameSetup();
     } else {
       toast.error(`Incorrect! That was ${removeThe(countryName)}.`);
       console.log(removeThe(countryName));
+      setAnimate(false);
       gameSetup();
       formJson.guess = "";
     }
@@ -84,10 +87,27 @@ export default function Game() {
 
   return (
     <>
-      <div className="absolute top-0 left-0 text-4xl m-3">{score}</div>
-      <div className="absolute top-0 left-0 text-4xl m-3 mt-10 text-pink-900">
+      <div className="absolute top-0 left-0 text-3xl m-3  text-gray-600">
         {highScore}
       </div>
+
+      {/* <div
+        className={`absolute top-0 left-0 text-5xl ml-7 mt-7 animate-bounce-short`}
+      >
+        {score}
+      </div> */}
+
+      {animate ? (
+        <div
+          className={`absolute top-0 left-0 text-5xl ml-7 mt-7 animate-bounce-short`}
+          onAnimationEnd={() => setAnimate(false)}
+        >
+          {score}
+        </div>
+      ) : (
+        <div className="absolute top-0 left-0 text-5xl ml-7 mt-7">{score}</div>
+      )}
+
       <div className="absolute top-0 right-0 text-4xl m-3">
         <ModeToggle />
       </div>

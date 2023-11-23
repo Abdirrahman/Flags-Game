@@ -63,6 +63,7 @@ module.exports = {
         },
       },
       animation: {
+        "bounce-short": "bounce 1s ease-in-out 5",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
