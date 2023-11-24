@@ -15,12 +15,8 @@ export default function Game() {
   const [countryCode, setCountryCode] = React.useState<string>("cz");
   const [countryName, setCountryName] = React.useState<string>("Czechia");
   const [score, setScore] = React.useState<number>(0);
-  const [highScore, setHighScore] = React.useState<number>(0);
   const [answer, setAnswer] = React.useState<string>("");
   const [animate, setAnimate] = React.useState<boolean>(false);
-
-  // Highscore impl for later
-  // if (highScore < score ) setHighScore(score)
 
   React.useEffect(() => {
     // fetch("https://flagcdn.com/en/codes.json")
@@ -55,7 +51,7 @@ export default function Game() {
       setScore(score + 1);
       setAnimate(true);
       toast.success(`Correct! That was ${removeThe(countryName)}.`);
-      console.log("correct");
+
       gameSetup();
     } else {
       toast.error(`Incorrect! That was ${removeThe(countryName)}.`);
@@ -64,6 +60,7 @@ export default function Game() {
       gameSetup();
       formJson.guess = "";
     }
+
     // Reset input
     setAnswer("");
   }
@@ -78,7 +75,6 @@ export default function Game() {
 
     const randomKey = keys[Math.floor(Math.random() * keys.length)];
     const randomValue = obj[randomKey];
-    console.log(randomKey, randomValue);
     return [randomKey, randomValue];
   }
   function removeThe(input: string): string {
@@ -97,14 +93,8 @@ export default function Game() {
     .join("");
   return (
     <>
-      <div className="absolute top-0 left-0 text-3xl m-3  text-gray-600">
-        {highScore}
-      </div>
-
-      {/* <div
-        className={`absolute top-0 left-0 text-5xl ml-7 mt-7 animate-bounce-short`}
-      >
-        {score}
+      {/* <div className="absolute top-0 left-0 text-3xl m-3  text-gray-600">
+        {typeof highScore === "string" ? parseInt(highScore) : 0}
       </div> */}
 
       {animate ? (

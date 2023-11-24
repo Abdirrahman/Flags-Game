@@ -13,7 +13,6 @@ export function ModeToggle() {
     const isDarkMode = document.documentElement.classList.contains("dark");
     setThemeState(isDarkMode ? "dark" : "theme-light");
     setIsDark(isDarkMode ? true : false);
-    console.log("theme", theme);
   }, []);
 
   React.useEffect(() => {
