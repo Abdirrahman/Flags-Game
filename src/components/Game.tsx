@@ -1,10 +1,16 @@
+import * as React from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import * as React from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Toaster, toast } from "sonner";
-import { countryListAlpha2 } from "@/lib/countries";
 import { ModeToggle } from "./ModeToogle";
 import { Github, Lightbulb } from "lucide-react";
+import { countryListAlpha2 } from "@/lib/countries";
+
 export default function Game() {
   const [countryCode, setCountryCode] = React.useState<string>("cz");
   const [countryName, setCountryName] = React.useState<string>("Czechia");
@@ -85,6 +91,10 @@ export default function Game() {
     return result.trim();
   }
 
+  const hint: string = countryName
+    .split("")
+    .map((char, index) => (index % 2 === 1 ? "_" : char))
+    .join("");
   return (
     <>
       <div className="absolute top-0 left-0 text-3xl m-3  text-gray-600">
@@ -120,10 +130,16 @@ export default function Game() {
       </div>
 
       <div className="absolute bottom-0 right-0 m-3">
-        <Button variant="outline" size="icon">
-          <Lightbulb />
-        </Button>
+        <Popover>
+          <PopoverTrigger>
+            <Button variant="outline" size="icon">
+              <Lightbulb />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>Hint: {hint}</PopoverContent>
+        </Popover>
       </div>
+
       <img
         src={`https://flagcdn.com/${countryCode}.svg`}
         width="200"
