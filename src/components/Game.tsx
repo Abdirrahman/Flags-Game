@@ -18,6 +18,18 @@ export default function Game() {
   const [answer, setAnswer] = React.useState<string>("");
   const [animate, setAnimate] = React.useState<boolean>(false);
 
+  let highScore =
+    typeof localStorage !== "undefined" && localStorage.getItem("HiScore")
+      ? localStorage.getItem("HiScore")
+      : "0";
+
+  if (highScore !== null) {
+    if (parseInt(highScore) < score) highScore = score.toString();
+    localStorage.setItem("HiScore", highScore);
+  }
+
+  console.log(highScore);
+
   React.useEffect(() => {
     // fetch("https://flagcdn.com/en/codes.json")
     //   .then((response) => response.json())
@@ -35,6 +47,7 @@ export default function Game() {
       setCountryName(country[1]);
     }
   }
+
   function handleSubmit(e: any) {
     // Prevent the browser from reloading the page
     e.preventDefault();
@@ -60,7 +73,6 @@ export default function Game() {
       gameSetup();
       formJson.guess = "";
     }
-
     // Reset input
     setAnswer("");
   }
@@ -93,9 +105,9 @@ export default function Game() {
     .join("");
   return (
     <>
-      {/* <div className="absolute top-0 left-0 text-3xl m-3  text-gray-600">
-        {typeof highScore === "string" ? parseInt(highScore) : 0}
-      </div> */}
+      <div className="absolute top-0 left-0 text-3xl m-3  text-gray-600">
+        {typeof highScore !== "string" ? "0" : highScore}
+      </div>
 
       {animate ? (
         <div
