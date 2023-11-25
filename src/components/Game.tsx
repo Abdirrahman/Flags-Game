@@ -28,13 +28,7 @@ export default function Game() {
     localStorage.setItem("HiScore", highScore);
   }
 
-  console.log(highScore);
-
   React.useEffect(() => {
-    // fetch("https://flagcdn.com/en/codes.json")
-    //   .then((response) => response.json())
-    //   .then((data) => console.log(data))
-    //   .catch((error) => console.error(error));
     gameSetup();
   }, []);
 
@@ -68,7 +62,6 @@ export default function Game() {
       gameSetup();
     } else {
       toast.error(`Incorrect! That was ${removeThe(countryName)}.`);
-      console.log(removeThe(countryName));
       setAnimate(false);
       gameSetup();
       formJson.guess = "";
