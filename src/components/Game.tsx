@@ -98,7 +98,8 @@ export default function Game() {
     .join("");
   return (
     <>
-      <div className="absolute top-0 left-0 text-3xl m-3  text-gray-600">
+      {/* Score inspired by https://pillarvalley.netlify.app/ */}
+      <div className="absolute top-0 left-0 text-2xl m-3  text-gray-600">
         {typeof highScore !== "string" ? "0" : highScore}
       </div>
 
