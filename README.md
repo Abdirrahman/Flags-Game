@@ -21,7 +21,7 @@ Flags Game is a web-based game designed to challenge players on their ability to
 Open the game in your web browser.
 
 2. Guess the Flag:
-Identify the displayed flag and select the correct country from the options.
+Identify the displayed flag and input the country or state name correctly.
 
 3. Score Points:
 Earn points for each correct answer and your high score is how many correct answers you get in a row.
