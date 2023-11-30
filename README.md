@@ -1,54 +1,30 @@
-# Astro Starter Kit: Basics
+# Flags Game
+Welcome to Flags Game! This is a simple and fun game to test and improve your knowledge of world flags.
 
-```sh
-npm create astro@latest -- --template basics
-```
+## Table of Contents
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+- [Introduction](#introduction) 
+- [How to play](#how-to-play) 
+- [Licenses](#licenses) 
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
 
-## 🚀 Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
+## Introduction
+Flags Game is a web-based game designed to challenge players on their ability to recognize flags from various countries around the world. It's an educational and entertaining way to learn more about global geography.
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+![flags-game](https://i.ibb.co/WHgW8kn/game.png" )
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## How to play
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+1. Start the Game:
+Open the game in your web browser.
 
-Any static assets, like images, can be placed in the `public/` directory.
+2. Guess the Flag:
+Identify the displayed flag and select the correct country from the options.
 
-## 🧞 Commands
+3. Score Points:
+Earn points for each correct answer and your high score is how many correct answers you get in a row.
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## License
+This project is licensed under the [MIT License](LISENSE). Feel free to use and modify the code for your own educational or entertainment purposes.
