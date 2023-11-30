@@ -62,6 +62,7 @@ export default function Game() {
       gameSetup();
     } else {
       toast.error(`Incorrect! That was ${removeThe(countryName)}.`);
+      setScore(0);
       setAnimate(false);
       gameSetup();
       formJson.guess = "";
@@ -135,23 +136,24 @@ export default function Game() {
           <PopoverContent>Hint: {hint}</PopoverContent>
         </Popover>
       </div>
-
-      <img
-        src={`https://flagcdn.com/${countryCode}.svg`}
-        width="200"
-        className="p-2"
-      />
-      <form method="post" onSubmit={handleSubmit}>
-        <label>
-          <Input
-            type="text"
-            name="guess"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            placeholder="Guess Here"
-          />
-        </label>
-      </form>
+      <div className="absolute top-12 md:top-1/3">
+        <img
+          src={`https://flagcdn.com/${countryCode}.svg`}
+          width="200"
+          className="p-2"
+        />
+        <form method="post" onSubmit={handleSubmit}>
+          <label>
+            <Input
+              type="text"
+              name="guess"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="Guess Here"
+            />
+          </label>
+        </form>
+      </div>
       <Toaster richColors position="top-center" />
     </>
   );
