@@ -5,9 +5,7 @@ import Game from "../components/Game.tsx";
 ---
 
 <Layout title="Flags Game">
-  <div
-    class="flex justify-center flex-col items-center mt-48 lg:m-72 overscroll-contain"
-  >
-    <Game client:only />
+  <div class="page-shell">
+    <Game client:only="react" />
   </div>
 </Layout>

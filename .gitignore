@@ -5,7 +5,7 @@ dist/
 .astro/
 
 # dependencies
-node_modules/
+node_modules
 
 # logs
 npm-debug.log*
@@ -19,3 +19,7 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# browser test output
+playwright-report/
+test-results/

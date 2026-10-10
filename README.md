@@ -1,30 +1,39 @@
 # Flags Game
-Welcome to Flags Game! This is a simple and fun game to test and improve your knowledge of world flags.
 
-## Table of Contents
+A flag guessing game with two ways to play: type the country name or pick from four answers. Multiple-choice answers are shuffled for every flag. Territories with the same flag as another country are excluded so every question has one clear answer. On desktop, use number keys 1–4; when typing, press Enter or select **Check answer**.
 
-- [Introduction](#introduction) 
-- [How to play](#how-to-play) 
-- [Licenses](#licenses) 
+Country names use familiar forms such as Syria, Russia, South Korea, and the United Kingdom. Typed answers ignore capitalization, spacing, punctuation, and accents, and accept common alternatives such as UK, USA, and Czech Republic.
 
+Each mode tracks its own current streak, best streak, and total correct answers. A wrong answer resets the current streak. Progress and your light/dark theme are saved in this browser’s local storage; the original `HiScore` is preserved as the typed mode’s best streak. Clearing browser data removes saved progress. If storage is blocked, the game still works for the current visit.
 
+The centered layout adapts to phones, tablets, desktop screens, and landscape orientations. Dark mode uses `#161616`. Flag images require access to [FlagCDN](https://flagcdn.com/).
 
+## Run locally
 
-## Introduction
-Flags Game is a web-based game designed to challenge players on their ability to recognize flags from various countries around the world. It's an educational and entertaining way to learn more about global geography.
+```sh
+npm ci
+npm run dev
+```
 
-![flags-game](https://i.ibb.co/WHgW8kn/game.png" )
+## Build and test
 
-## How to play
+```sh
+npm run build
+npm test
+```
 
-1. Start the Game:
-Open the game in your web browser.
+Tests cover answer matching, randomized choices, streak persistence, unavailable storage, theme persistence, and layouts from 320px to 1920px wide. They use the system Chromium when available. Otherwise, install Playwright’s browser:
 
-2. Guess the Flag:
-Identify the displayed flag and input the country or state name correctly.
+```sh
+npx playwright install chromium
+```
 
-3. Score Points:
-Earn points for each correct answer and your high score is how many correct answers you get in a row.
+To use a different Chromium executable, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. To also check real external flag images:
+
+```sh
+FLAGS_GAME_LIVE_ASSETS=1 npm test
+```
 
 ## License
-This project is licensed under the [MIT License](LISENSE). Feel free to use and modify the code for your own educational or entertainment purposes.
+
+[MIT](LICENSE).

@@ -4,7 +4,8 @@
 
 @layer base {
   :root {
-    --background: 80,17.6%,96.7%;
+    color-scheme: light;
+    --background: 80 17.6% 96.7%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -36,32 +37,33 @@
   }
  
   .dark {
-    --background: 222.2 84% 4.9%;
+    color-scheme: dark;
+    --background: 0 0% 8.6274509804%;
     --foreground: 210 40% 98%;
  
-    --card: 222.2 84% 4.9%;
+    --card: 0 0% 8.6274509804%;
     --card-foreground: 210 40% 98%;
  
-    --popover: 222.2 84% 4.9%;
+    --popover: 0 0% 8.6274509804%;
     --popover-foreground: 210 40% 98%;
  
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
  
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 0 0% 15%;
     --secondary-foreground: 210 40% 98%;
  
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 0 0% 15%;
     --muted-foreground: 215 20.2% 65.1%;
  
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 0 0% 15%;
     --accent-foreground: 210 40% 98%;
  
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
  
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 0 0% 30%;
+    --input: 0 0% 30%;
     --ring: 212.7 26.8% 83.9%;
   }
 }
@@ -72,5 +74,301 @@
   }
   body {
     @apply bg-background text-foreground;
+    min-width: 0;
+    min-height: 100svh;
+    margin: 0;
   }
+}
+
+.page-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: clamp(1rem, 4vw, 2.5rem);
+}
+
+.game-shell {
+  display: grid;
+  width: min(100%, 60rem);
+  min-width: 0;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.game-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.game-description {
+  max-width: 34rem;
+  margin: 0.65rem auto 0;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.5;
+}
+
+.game-toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.game-toolbar button,
+.game-toolbar a {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.mode-picker {
+  width: min(100%, 26rem);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+}
+
+.mode-picker legend,
+.answer-label {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.mode-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.mode-option {
+  min-height: 2.75rem;
+  height: auto;
+  white-space: normal;
+}
+
+.mode-option[aria-pressed="true"] {
+  border: 1px solid hsl(var(--foreground));
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+}
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 30rem);
+  margin: 0 auto;
+  gap: 0.75rem;
+}
+
+.game-metric {
+  min-width: 0;
+  padding: 0.75rem 0.35rem;
+}
+
+.game-metric span {
+  display: grid;
+  place-items: center;
+  min-height: 2.7em;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.game-metric strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.flag-frame {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  height: clamp(8rem, 25svh, 13rem);
+}
+
+.flag-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: min(100%, 20rem);
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.answer-form {
+  display: grid;
+  width: min(100%, 26rem);
+  margin: 0 auto;
+  gap: 0.65rem;
+}
+
+.answer-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
+}
+
+.answer-label {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.answer-form .guess-input {
+  min-width: 0;
+  height: 3rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.submit-answer {
+  height: 3rem;
+}
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.answer-choice {
+  display: flex;
+  min-width: 0;
+  min-height: 3.5rem;
+  height: auto;
+  padding: 0.75rem;
+  gap: 0.5rem;
+  white-space: normal;
+  text-align: center;
+}
+
+.choice-key {
+  flex: 0 0 1.5rem;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.country-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.feedback-slot {
+  min-height: 1.5rem;
+}
+
+.feedback,
+.game-help,
+.saved-note {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.feedback[data-correct="true"] {
+  color: #16703c;
+}
+
+.feedback[data-correct="false"] {
+  color: #b42318;
+}
+
+.dark .feedback[data-correct="true"] {
+  color: #86efac;
+}
+
+.dark .feedback[data-correct="false"] {
+  color: #fca5a5;
+}
+
+.game-help,
+.saved-note {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.8rem;
+}
+
+.game-footer {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+}
+
+.game-footer details {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.game-footer summary {
+  min-height: 2.75rem;
+  padding: 0.6rem;
+  cursor: pointer;
+}
+
+.game-footer summary:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+@media (min-width: 30rem) {
+  .answer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .answer-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 24rem) {
+  .answer-entry {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.answer-choice[data-feedback="correct"] {
+  border-color: #16703c;
+  background: #dcfce7;
+  color: #14532d;
+  opacity: 1;
+}
+
+.answer-choice[data-feedback="incorrect"] {
+  border-color: #b42318;
+  background: #fee2e2;
+  color: #7f1d1d;
+  opacity: 1;
+}
+
+.flag-error {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
+
+.flag-error p {
+  margin: 0;
+}
+
+.flag-error button {
+  min-height: 2.75rem;
 }

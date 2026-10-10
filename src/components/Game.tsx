@@ -1,160 +1,277 @@
 import * as React from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Toaster, toast } from "sonner";
 import { ModeToggle } from "./ModeToogle";
-import { Github, Lightbulb } from "lucide-react";
-import { countryListAlpha2 } from "@/lib/countries";
+import { Github } from "lucide-react";
+import {
+  createRound,
+  isCorrectAnswer,
+  readProgress,
+  recordGuess,
+  writeProgress,
+  type GameMode,
+} from "@/lib/game";
+
+type Feedback = { correct: boolean; countryName: string; selected: string };
 
 export default function Game() {
-  const [countryCode, setCountryCode] = React.useState<string>("cz");
-  const [countryName, setCountryName] = React.useState<string>("Czechia");
-  const [score, setScore] = React.useState<number>(0);
-  const [answer, setAnswer] = React.useState<string>("");
-  const [animate, setAnimate] = React.useState<boolean>(false);
-
-  let highScore =
-    typeof localStorage !== "undefined" && localStorage.getItem("HiScore")
-      ? localStorage.getItem("HiScore")
-      : "0";
-
-  if (highScore !== null) {
-    if (parseInt(highScore) < score) highScore = score.toString();
-    localStorage.setItem("HiScore", highScore);
-  }
+  const [mode, setMode] = React.useState<GameMode>("typed");
+  const [round, setRound] = React.useState(() => createRound());
+  const [progress, setProgress] = React.useState(readProgress);
+  const [answer, setAnswer] = React.useState("");
+  const [feedback, setFeedback] = React.useState<Feedback | null>(null);
+  const [isAdvancing, setIsAdvancing] = React.useState(false);
+  const [flagStatus, setFlagStatus] = React.useState<"loading" | "ready" | "error">("loading");
+  const [canSave, setCanSave] = React.useState(true);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const hintRef = React.useRef<HTMLDetailsElement>(null);
+  const answerGridRef = React.useRef<HTMLDivElement>(null);
+  const restoreAnswerFocusRef = React.useRef(false);
+  const roundLockedRef = React.useRef(false);
+  const feedbackTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stats = progress[mode];
+  const inputDisabled = isAdvancing || flagStatus !== "ready";
 
   React.useEffect(() => {
-    gameSetup();
+    setCanSave(writeProgress(progress));
+  }, [progress]);
+
+  React.useEffect(() => () => {
+    if (feedbackTimeoutRef.current !== null) {
+      clearTimeout(feedbackTimeoutRef.current);
+    }
   }, []);
 
-  function gameSetup() {
-    const country = getRandomCountry(countryListAlpha2);
-    if (country === undefined) {
-      console.log("Undefined country");
+
+  React.useEffect(() => {
+    if (inputDisabled || !restoreAnswerFocusRef.current) return;
+    restoreAnswerFocusRef.current = false;
+    if (mode === "typed") {
+      inputRef.current?.focus({ preventScroll: true });
     } else {
-      setCountryCode(country[0].toLowerCase());
-      setCountryName(country[1]);
+      answerGridRef.current?.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
     }
-  }
+  }, [inputDisabled, mode]);
 
-  function handleSubmit(e: any) {
-    // Prevent the browser from reloading the page
-    e.preventDefault();
 
-    const form = e.target;
-    const formData = new FormData(form);
-    // Read the form data
-    const formJson = Object.fromEntries(formData.entries());
-
-    if (
-      formJson.guess.toString().toLowerCase() ==
-      removeThe(countryName.toLowerCase())
-    ) {
-      setScore(score + 1);
-      setAnimate(true);
-      toast.success(`Correct! That was ${removeThe(countryName)}.`);
-
-      gameSetup();
-    } else {
-      toast.error(`Incorrect! That was ${removeThe(countryName)}.`);
-      setScore(0);
-      setAnimate(false);
-      gameSetup();
-      formJson.guess = "";
-    }
-    // Reset input
+  function nextRound() {
+    roundLockedRef.current = false;
     setAnswer("");
-  }
-  function getRandomCountry(
-    obj: Record<string, string>
-  ): [string, string] | undefined {
-    const keys = Object.keys(obj);
-
-    if (keys.length === 0) {
-      return undefined;
-    }
-
-    const randomKey = keys[Math.floor(Math.random() * keys.length)];
-    const randomValue = obj[randomKey];
-    return [randomKey, randomValue];
-  }
-  function removeThe(input: string): string {
-    // Use regular expression to match "(the)" case insensitive globally
-    const regex = /\(the\)/gi;
-
-    // Replace "(the)" occurrences with an empty string
-    const result = input.replace(regex, "");
-
-    return result.trim();
+    setFlagStatus("loading");
+    setRound((previous) => createRound(previous.country.code));
+    if (hintRef.current) hintRef.current.open = false;
   }
 
-  const hint: string = countryName
+  const submitGuess = React.useCallback((guess: string) => {
+    if (inputDisabled || roundLockedRef.current || !guess.trim()) return;
+    roundLockedRef.current = true;
+    const activeElement = document.activeElement;
+    restoreAnswerFocusRef.current = activeElement instanceof HTMLElement &&
+      activeElement.closest(".answer-form, .answer-grid") !== null;
+    const correct = isCorrectAnswer(round.country, guess);
+    setProgress((current) => ({
+      ...current,
+      [mode]: recordGuess(current[mode], correct),
+    }));
+    setFeedback({ correct, countryName: round.country.name, selected: guess });
+    setIsAdvancing(true);
+    setAnswer("");
+    feedbackTimeoutRef.current = setTimeout(() => {
+      feedbackTimeoutRef.current = null;
+      setIsAdvancing(false);
+      nextRound();
+    }, 500);
+  }, [inputDisabled, mode, round]);
+
+  React.useEffect(() => {
+    if (mode !== "choice" || inputDisabled) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.altKey || event.metaKey || event.repeat) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && (
+        target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)
+      )) return;
+      if (!/^[1-4]$/.test(event.key)) return;
+      const choice = round.choices[Number(event.key) - 1];
+      if (choice) {
+        event.preventDefault();
+        submitGuess(choice.name);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [inputDisabled, mode, round, submitGuess]);
+
+  function changeMode(nextMode: GameMode) {
+    if (mode === nextMode || isAdvancing) return;
+    restoreAnswerFocusRef.current = false;
+    setMode(nextMode);
+    setFeedback(null);
+    nextRound();
+  }
+
+  const hint = round.country.name
     .split("")
-    .map((char, index) => (index % 2 === 1 ? "_" : char))
+    .map((character, index) => character === " " || index % 2 === 0 ? character : "_")
     .join("");
+
   return (
-    <>
-      {/* Score inspired by https://pillarvalley.netlify.app/ */}
-      <div className="absolute top-0 left-0 text-2xl m-3  text-gray-600">
-        {typeof highScore !== "string" ? "0" : highScore}
-      </div>
-
-      {animate ? (
-        <div
-          className={`absolute top-0 left-0 text-5xl ml-7 mt-7 animate-bounce-short`}
-          onAnimationEnd={() => setAnimate(false)}
-        >
-          {score}
-        </div>
-      ) : (
-        <div className="absolute top-0 left-0 text-5xl ml-7 mt-7">{score}</div>
-      )}
-
-      <div className="absolute top-0 right-0 text-4xl m-3">
-        <ModeToggle />
-      </div>
-      <div className="absolute bottom-0 left-0 m-3">
-        <Button variant="outline" size="icon">
-          <a href="https://github.com/Abdirrahman/Flags-Game" target="_blank">
-            <Github />
+    <main className="game-shell">
+      <div className="game-toolbar">
+        <Button asChild variant="outline" size="icon">
+          <a
+            href="https://github.com/Abdirrahman/Flags-Game"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View Flags Game on GitHub"
+          >
+            <Github aria-hidden="true" />
           </a>
         </Button>
+        <ModeToggle />
       </div>
 
-      <div className="absolute bottom-0 right-0 m-3">
-        <Popover>
-          <PopoverTrigger>
-            <Button variant="outline" size="icon">
-              <Lightbulb />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent>Hint: {hint}</PopoverContent>
-        </Popover>
-      </div>
-      <div className="absolute top-12 md:top-1/3">
+      <header className="game-header">
+        <h1>Flags Game</h1>
+        <p className="game-description">Name the flag. Keep your streak going.</p>
+      </header>
+
+      <fieldset className="mode-picker">
+        <legend>How do you want to play?</legend>
+        <div className="mode-options">
+          <Button
+            type="button"
+            variant={mode === "typed" ? "default" : "outline"}
+            className="mode-option"
+            aria-pressed={mode === "typed"}
+            disabled={isAdvancing}
+            onClick={() => changeMode("typed")}
+          >
+            Type answer
+          </Button>
+          <Button
+            type="button"
+            variant={mode === "choice" ? "default" : "outline"}
+            className="mode-option"
+            aria-pressed={mode === "choice"}
+            disabled={isAdvancing}
+            onClick={() => changeMode("choice")}
+          >
+            Multiple choice
+          </Button>
+        </div>
+      </fieldset>
+
+      <section className="scoreboard" aria-label="Your progress">
+        <Metric label="Current streak" value={stats.streak} />
+        <Metric label="Best streak" value={stats.bestStreak} />
+        <Metric label="Total correct" value={stats.correctAnswers} />
+      </section>
+
+      <div className="flag-frame" aria-busy={flagStatus === "loading"}>
         <img
-          src={`https://flagcdn.com/${countryCode}.svg`}
-          width="200"
-          className="p-2"
+          key={round.country.code}
+          src={`https://flagcdn.com/${round.country.code}.svg`}
+          alt="Flag to identify"
+          onLoad={() => setFlagStatus("ready")}
+          onError={() => setFlagStatus("error")}
         />
-        <form method="post" onSubmit={handleSubmit}>
-          <label>
+      </div>
+
+      {flagStatus === "error" && (
+        <div className="flag-error" role="alert">
+          <p>This flag couldn’t load. Check your connection or try another flag.</p>
+          <Button type="button" variant="outline" onClick={nextRound}>Try another flag</Button>
+        </div>
+      )}
+
+      {mode === "typed" ? (
+        <form className="answer-form" onSubmit={(event) => {
+          event.preventDefault();
+          submitGuess(answer);
+        }}>
+          <label htmlFor="guess" className="answer-label">Country name</label>
+          <div className="answer-entry">
             <Input
+              ref={inputRef}
+              id="guess"
+              className="guess-input"
               type="text"
               name="guess"
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              placeholder="Guess Here"
+              onChange={(event) => setAnswer(event.target.value)}
+              placeholder="Enter the country name"
+              autoComplete="off"
+              autoCapitalize="words"
+              spellCheck={false}
+              readOnly={inputDisabled}
+              aria-describedby="game-feedback"
             />
-          </label>
+            <Button
+              className="submit-answer"
+              type="submit"
+              disabled={inputDisabled || !answer.trim()}
+            >
+              Check answer
+            </Button>
+          </div>
         </form>
+      ) : (
+        <div ref={answerGridRef} className="answer-grid" role="group" aria-label="Answer choices">
+          {round.choices.map((choice, index) => (
+            <Button
+              key={choice.code}
+              type="button"
+              variant="outline"
+              className="answer-choice"
+              disabled={inputDisabled}
+              data-feedback={isAdvancing && feedback
+                ? choice.code === round.country.code ? "correct"
+                  : feedback.selected === choice.name ? "incorrect" : "muted"
+                : undefined}
+              onClick={() => submitGuess(choice.name)}
+            >
+              <span className="choice-key" aria-hidden="true">{index + 1}</span>
+              <span className="country-name">{choice.name}</span>
+            </Button>
+          ))}
+        </div>
+      )}
+
+      <div className="feedback-slot" id="game-feedback" role="status" aria-live="polite" aria-atomic="true">
+        {feedback ? (
+          <p className="feedback" data-correct={feedback.correct}>
+            {feedback.correct ? "Correct!" : "Incorrect."} That was {feedback.countryName}.
+          </p>
+        ) : (
+          <p className="game-help">
+            {flagStatus === "loading" ? "Loading flag…" : mode === "typed"
+              ? "Press Enter or check your answer."
+              : "Choose an answer or use number keys 1–4."}
+          </p>
+        )}
       </div>
-      <Toaster richColors position="top-center" />
-    </>
+
+      <footer className="game-footer">
+        <details ref={hintRef}>
+          <summary>Show a hint</summary>
+          <p>{hint}</p>
+        </details>
+        <p className="saved-note">
+          {canSave
+            ? "Each mode’s progress is saved on this browser."
+            : "Local saving is unavailable. Progress will last until you leave this page."}
+        </p>
+      </footer>
+    </main>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="game-metric">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
   );
 }

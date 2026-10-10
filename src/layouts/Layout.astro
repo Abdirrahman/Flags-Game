@@ -9,35 +9,20 @@ const { title } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Learn the world's flags with typed answers or multiple choice. Track your streaks and save your progress on this device." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <script is:inline>
-      const getThemePreference = () => {
-        if (
-          typeof localStorage !== "undefined" &&
-          localStorage.getItem("theme")
-        ) {
-          return localStorage.getItem("theme");
-        }
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      };
-      const isDark = getThemePreference() === "dark";
-      document.documentElement.classList[isDark ? "add" : "remove"]("dark");
-
-      if (typeof localStorage !== "undefined") {
-        const observer = new MutationObserver(() => {
-          const isDark = document.documentElement.classList.contains("dark");
-          localStorage.setItem("theme", isDark ? "dark" : "light");
-        });
-        observer.observe(document.documentElement, {
-          attributes: true,
-          attributeFilter: ["class"],
-        });
+      let preference;
+      try {
+        preference = localStorage.getItem("theme");
+      } catch {
+        // The game still works when browser storage is unavailable.
       }
+      const isDark = preference === "dark" ||
+        (preference !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.classList.toggle("dark", isDark);
     </script>
   </head>
   <body>
