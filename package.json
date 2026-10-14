@@ -11,7 +11,7 @@
   "dependencies": {
     "@vitejs/plugin-react": "latest",
     "vite": "latest",
-    "typescript": "^5",
+    "typescript": "^7",
     "react": "latest",
     "react-dom": "latest"
   },
@@ -21,6 +21,6 @@
     "@types/react-dom": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^7"
   }
 }
